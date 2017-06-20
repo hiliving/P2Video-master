@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PTVFactory</string>
+    <string name="error_gif">长宽不小于 %1$dpx，且大小不超过 %2$sM。</string>
+</resources>

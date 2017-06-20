@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ImageToVideo-master.iml" filepath="$PROJECT_DIR$/ImageToVideo-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mphototovideo/mphototovideo.iml" filepath="$PROJECT_DIR$/mphototovideo/mphototovideo.iml" />
+    </modules>
+  </component>
+</project>

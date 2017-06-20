@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="library-1.0.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mphototovideo/build/intermediates/exploded-aar/it.sephiroth.android.library.imagezoom/library/1.0.4/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/mphototovideo/build/intermediates/exploded-aar/it.sephiroth.android.library.imagezoom/library/1.0.4/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$APPLICATION_HOME_DIR$/gradle/gradle-2.14.1/caches/modules-2/files-2.1/it.sephiroth.android.library.imagezoom/library/1.0.4/6d69a84ae663e9529485b12a0ec3d8b9110aa922/library-1.0.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

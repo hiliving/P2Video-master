@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="matisse-0.4.3">
+    <ANNOTATIONS>
+      <root url="jar://$PROJECT_DIR$/mphototovideo/build/intermediates/exploded-aar/com.zhihu.android/matisse/0.4.3/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/mphototovideo/build/intermediates/exploded-aar/com.zhihu.android/matisse/0.4.3/res" />
+      <root url="jar://$PROJECT_DIR$/mphototovideo/build/intermediates/exploded-aar/com.zhihu.android/matisse/0.4.3/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$APPLICATION_HOME_DIR$/gradle/gradle-2.14.1/caches/modules-2/files-2.1/com.zhihu.android/matisse/0.4.3/904cfb8603c398d6cece784e71ad7c25bc1ac262/matisse-0.4.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
