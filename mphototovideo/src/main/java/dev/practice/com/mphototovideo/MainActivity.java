@@ -1,11 +1,17 @@
 package dev.practice.com.mphototovideo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +67,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cheseFile() {
+        int checkCode = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int checkRead = ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        //如果拒绝
+        if (checkCode== PackageManager.PERMISSION_DENIED||checkRead==PackageManager.PERMISSION_DENIED){
+            //申请权限
+            if (checkCode==PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},100);
+            }
+            if (checkRead==PackageManager.PERMISSION_DENIED){
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
+            }
+        }else if (checkCode==PackageManager.PERMISSION_GRANTED){
+            doSomething();
+        }
+    }
+
+    private void doSomething() {
         Matisse.from(MainActivity.this)
                 .choose(MimeType.allOf())
                 .countable(true)
@@ -71,6 +94,19 @@ public class MainActivity extends AppCompatActivity {
                 .thumbnailScale(0.85f)
                 .imageEngine(new GlideEngine())
                 .forResult(REQUEST_CODE_CHOOSE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 100:
+                if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
+                    //执行后续操作
+                    Toast.makeText(MainActivity.this,"已授权成功",Toast.LENGTH_LONG).show();
+                doSomething();
+                break;
+        }
     }
 
     @Override
@@ -134,12 +170,6 @@ public class MainActivity extends AppCompatActivity {
             progress.setVisibility(View.INVISIBLE);
         } catch (final IOException e) {
             Log.e("performJcodec: ", "执行异常 " + e.toString());
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-                }
-            });
         }
     }
 }

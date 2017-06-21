@@ -1,5 +1,7 @@
 package dev.practice.com.mphototovideo;
 
+import android.widget.Toast;
+
 import org.jcodec.codecs.h264.H264Encoder;
 import org.jcodec.codecs.h264.H264Utils;
 import org.jcodec.common.NIOUtils;
@@ -80,7 +82,11 @@ public class SequenceEncoderMp4
         }
 
         // Perform conversion
-        transform.transform(pic, toEncode);
+        try {
+            transform.transform(pic, toEncode);
+        }catch (Exception e){
+            return;
+        }
         // Encode image into H.264 frame, the result is stored in '_out' buffer
         _out.clear();
         ByteBuffer result = encoder.encodeFrame(toEncode, _out);

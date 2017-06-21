@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jcodec-android-0.1.9">
     <CLASSES>
-      <root url="jar://$APPLICATION_HOME_DIR$/gradle/gradle-2.14.1/caches/modules-2/files-2.1/org.jcodec/jcodec-android/0.1.9/390f4672af45d022b05015e21388e6836178f0bb/jcodec-android-0.1.9.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jcodec/jcodec-android/0.1.9/390f4672af45d022b05015e21388e6836178f0bb/jcodec-android-0.1.9.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
