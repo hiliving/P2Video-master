@@ -1,7 +1,5 @@
 package dev.practice.com.mphototovideo;
 
-import android.widget.Toast;
-
 import org.jcodec.codecs.h264.H264Encoder;
 import org.jcodec.codecs.h264.H264Utils;
 import org.jcodec.common.NIOUtils;
@@ -21,19 +19,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-/**
- * projectName: 	    Jcodec2
- * packageName:	        com.luoxiang.org.jcodec
- * className:	        SequenceEncoderMp4
- * author:	            Luoxiang
- * time:	            2017/1/6	17:40
- * desc:	            TODO
- *
- * svnVersion:	        $Rev
- * upDateAuthor:	    Vincent
- * upDate:	            2017/1/6
- * upDateDesc:	        TODO
- */
 
 public class SequenceEncoderMp4
         extends org.jcodec.api.android.SequenceEncoder {

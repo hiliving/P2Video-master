@@ -21,6 +21,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -35,9 +50,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.google.android.exoplayer2.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL;
 import static dev.practice.com.mphototovideo.Config.REQUEST_CODE_CHOOSE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
+    private static boolean CANPLAY = false;
     @Bind(R.id.chose)
     Button chose;
     @Bind(R.id.render)
@@ -47,11 +64,17 @@ public class MainActivity extends AppCompatActivity {
     private List<Uri> mSelected;
     private List<String> list = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        if (CANPLAY){
+            render.setText("预览");
+        }else {
+
+        }
     }
     @OnClick({R.id.chose,R.id.render})
     public void onClick(View view){
@@ -60,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
                 cheseFile();
                 break;
             case R.id.render:
-                performJcodec();
+                if (CANPLAY){
+                    startActivity(new Intent(MainActivity.this,PlayerActivity.class));
+                }else {
+                    performJcodec();
+                }
                 break;
         }
 
@@ -79,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},101);
             }
         }else if (checkCode==PackageManager.PERMISSION_GRANTED){
+            if (mSelected!=null&&mSelected.size()>0)
+            mSelected.clear();
+            CANPLAY=false;
             doSomething();
         }
     }
@@ -118,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < mSelected.size(); i++) {
                 list.add(getPath(mSelected.get(i)));
             }
+            render.setVisibility(View.VISIBLE);
+            chose.setText("重新选择文件");
         }
     }
     public String getPath(Uri uri){
@@ -138,38 +170,48 @@ public class MainActivity extends AppCompatActivity {
 
     private void performJcodec() {
         progress.setVisibility(View.VISIBLE);
-        try {
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               try {
+                   Log.e("performJcodec: ", "执行开始");
+                   SequenceEncoderMp4 se   = null;
+                   File outFile = new File(Constants.FILE_VIDEO_FLODER);
+                   if (!outFile.exists()){
+                       outFile.mkdirs();
+                   }
+                   File out = new File(Constants.FILE_VIDEO_FLODER, "jcode.mp4");
+                   se = new SequenceEncoderMp4(out);
 
-            Log.e("performJcodec: ", "执行开始");
-            SequenceEncoderMp4 se   = null;
-            File outFile = new File(Constants.FILE_VIDEO_FLODER);
-            if (!outFile.exists()){
-                outFile.mkdirs();
-            }
-            File out = new File(Constants.FILE_VIDEO_FLODER, "jcode.mp4");
-            se = new SequenceEncoderMp4(out);
+                   final File[] files = new File[list.size()];
+                   for (int i = 0; i < list.size(); i++) {
+                       files[i] = new File(list.get(i));
+                       Log.d("AAAAAMatisse", "mSelected: " +list.get(i));
+                       if (!files[i].exists()) { break; }
+                       Bitmap frame = BitmapUtil.decodeSampledBitmapFromFile(files[i].getAbsolutePath() , 480 , 320);
+                       se.encodeImage(frame);
+                       Log.d("performJcodec: ", "执行到的图片是 " + i);
+                   }
+                   se.finish();
+                   Log.d("performJcodec: ", "执行完成");
+                   runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           Toast.makeText(MainActivity.this,"导出完成",Toast.LENGTH_LONG).show();
+                           CANPLAY=true;
+                           render.setText("预览");
+                           progress.setVisibility(View.INVISIBLE);
+                       }
+                   });
+                   sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(out)));
 
-            final File[] files = new File[list.size()];
-            for (int i = 0; i < list.size(); i++) {
-                files[i] = new File(list.get(i));
-                Log.d("AAAAAMatisse", "mSelected: " +list.get(i));
-                if (!files[i].exists()) { break; }
-                Bitmap frame = BitmapUtil.decodeSampledBitmapFromFile(files[i].getAbsolutePath() , 480 , 320);
-                se.encodeImage(frame);
-                Log.d("performJcodec: ", "执行到的图片是 " + i);
-            }
-            se.finish();
-            Log.d("performJcodec: ", "执行完成");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(MainActivity.this,"导出完成",Toast.LENGTH_LONG).show();
-                }
-            });
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(out)));
-            progress.setVisibility(View.INVISIBLE);
-        } catch (final IOException e) {
-            Log.e("performJcodec: ", "执行异常 " + e.toString());
-        }
+               } catch (final IOException e) {
+                   Log.e("performJcodec: ", "执行异常 " + e.toString());
+               }
+           }
+       }).start();
+
+
     }
+
 }
